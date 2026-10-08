@@ -1,0 +1,8 @@
+pandas
+numpy
+PyYAML
+python-dotenv
+rich
+requests
+websocket-client==0.56.0
+pytest

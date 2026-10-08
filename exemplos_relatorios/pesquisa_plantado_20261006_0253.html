@@ -1,0 +1,41 @@
+<html><head><meta charset='utf-8'><title>Pesquisa de hipóteses</title><style>body{font-family:Segoe UI,Arial,sans-serif;margin:24px;color:#222;background:#fafafa}
+table{border-collapse:collapse;margin:12px 0;font-size:13px}td,th{border:1px solid #ccc;padding:4px 8px}
+th{background:#eee}.ok{color:#0a7a2f;font-weight:bold}.ruim{color:#b00020}.box{background:#fff;border:1px solid #ddd;
+padding:12px 16px;border-radius:6px;margin:12px 0}h1{font-size:22px}h2{font-size:18px;margin-top:28px}</style></head><body>
+<h1>Pesquisa de hipóteses — pipeline de validação</h1>
+<div class='box'><b>CONTROLE: dados plantado</b> (sintéticos). Esperado: achar 'hora' = 14, lado CALL.</div>
+<div class='box'><b>Veredito:</b> <span class='ok'>Há regra(s) APROVADA(S) em todas as etapas.</span> Mesmo assim, confirme ao vivo antes de aumentar a entrada.</div>
+<p>Treino: 2021-01-04 → 2021-11-08 | Teste: → 2022-06-02 | Período novo (intocado): → 2022-12-02</p>
+<p>Breakeven: exp 1 min = 54.1% (payout 85%), exp 5 min = 54.1% (payout 85%), exp 15 min = 55.6% (payout 80%)</p>
+<h2>Ativos</h2><table><tr><th>Ativo</th><th>De</th><th>Até</th><th>Candles</th></tr>
+<tr><td>EURUSD</td><td>2021-01-04</td><td>2022-12-02</td><td>720,000</td></tr>
+<tr><td>GBPUSD</td><td>2021-01-04</td><td>2022-12-02</td><td>720,000</td></tr>
+<tr><td>USDJPY</td><td>2021-01-04</td><td>2022-12-02</td><td>720,000</td></tr>
+<tr><td>AUDUSD</td><td>2021-01-04</td><td>2022-12-02</td><td>720,000</td></tr>
+</table><h2>Resumo por família</h2><table><tr><th>Família</th><th>Testes (treino)</th><th>≠50% no treino (p&lt;5%)</th><th>…esperado só por sorte</th><th>Passaram treino (IC&gt;breakeven)</th><th>Passaram teste</th><th>Aprovadas</th></tr>
+<tr><td>hora</td><td>720</td><td>36</td><td>18</td><td>12</td><td>11</td><td class='ok'>11</td></tr>
+<tr><td>regime</td><td>958</td><td>32</td><td>24</td><td>0</td><td>0</td><td class=''>0</td></tr>
+</table>
+<h2>Hipóteses que passaram no treino (e o que aconteceu depois)</h2><table><tr><th>Família</th><th>Parâmetros</th><th>Exp</th><th>Ativo</th><th>Lado</th><th>Treino n / acerto</th><th>Teste n / acerto [IC95%]</th><th>Novo n / acerto [IC95%]</th><th>Status</th></tr>
+<tr><td>hora</td><td>{&quot;hora&quot;: 14}</td><td>15</td><td>EURUSD</td><td>seguir/CALL</td><td>880 / 65.2%</td><td>588 / 68.9% [65.0%, 72.5%]</td><td>523 / 66.3% [62.2%, 70.3%]</td><td class='ok'>APROVADA</td></tr>
+<tr><td>hora</td><td>{&quot;hora&quot;: 14}</td><td>15</td><td>USDJPY</td><td>seguir/CALL</td><td>884 / 65.3%</td><td>590 / 68.6% [64.8%, 72.3%]</td><td>524 / 70.4% [66.4%, 74.2%]</td><td class='ok'>APROVADA</td></tr>
+<tr><td>hora</td><td>{&quot;hora&quot;: 14}</td><td>15</td><td>TODOS</td><td>seguir/CALL</td><td>3528 / 66.0%</td><td>2355 / 68.5% [66.6%, 70.4%]</td><td>2090 / 68.4% [66.3%, 70.3%]</td><td class='ok'>APROVADA</td></tr>
+<tr><td>hora</td><td>{&quot;hora&quot;: 14}</td><td>15</td><td>GBPUSD</td><td>seguir/CALL</td><td>883 / 67.8%</td><td>589 / 68.4% [64.6%, 72.0%]</td><td>523 / 67.3% [63.2%, 71.2%]</td><td class='ok'>APROVADA</td></tr>
+<tr><td>hora</td><td>{&quot;hora&quot;: 14}</td><td>15</td><td>AUDUSD</td><td>seguir/CALL</td><td>881 / 65.5%</td><td>588 / 68.2% [64.3%, 71.8%]</td><td>520 / 69.4% [65.3%, 73.2%]</td><td class='ok'>APROVADA</td></tr>
+<tr><td>hora</td><td>{&quot;hora&quot;: 14}</td><td>5</td><td>AUDUSD</td><td>seguir/CALL</td><td>2628 / 59.6%</td><td>1763 / 61.3% [59.0%, 63.5%]</td><td>1559 / 61.9% [59.5%, 64.3%]</td><td class='ok'>APROVADA</td></tr>
+<tr><td>hora</td><td>{&quot;hora&quot;: 14}</td><td>5</td><td>TODOS</td><td>seguir/CALL</td><td>10520 / 59.9%</td><td>7063 / 59.9% [58.7%, 61.0%]</td><td>6245 / 61.0% [59.8%, 62.2%]</td><td class='ok'>APROVADA</td></tr>
+<tr><td>hora</td><td>{&quot;hora&quot;: 14}</td><td>5</td><td>EURUSD</td><td>seguir/CALL</td><td>2625 / 58.9%</td><td>1765 / 59.6% [57.3%, 61.9%]</td><td>1557 / 60.8% [58.3%, 63.2%]</td><td class='ok'>APROVADA</td></tr>
+<tr><td>hora</td><td>{&quot;hora&quot;: 14}</td><td>5</td><td>USDJPY</td><td>seguir/CALL</td><td>2632 / 60.0%</td><td>1768 / 59.3% [57.0%, 61.6%]</td><td>1569 / 61.8% [59.4%, 64.2%]</td><td class='ok'>APROVADA</td></tr>
+<tr><td>hora</td><td>{&quot;hora&quot;: 14}</td><td>5</td><td>GBPUSD</td><td>seguir/CALL</td><td>2635 / 61.4%</td><td>1767 / 59.3% [57.0%, 61.6%]</td><td>1560 / 59.5% [57.0%, 61.9%]</td><td class='ok'>APROVADA</td></tr>
+<tr><td>hora</td><td>{&quot;hora&quot;: 14}</td><td>1</td><td>TODOS</td><td>seguir/CALL</td><td>51984 / 54.5%</td><td>35045 / 54.7% [54.2%, 55.2%]</td><td>31042 / 54.9% [54.3%, 55.4%]</td><td class='ok'>APROVADA</td></tr>
+<tr><td>hora</td><td>{&quot;hora&quot;: 14}</td><td>1</td><td>GBPUSD</td><td>seguir/CALL</td><td>12984 / 55.1%</td><td>8752 / 54.1% [53.1%, 55.2%]</td><td>- / - [-, -]</td><td class='ruim'>reprovada no teste</td></tr>
+</table>
+<h2>Walk-forward das aprovadas</h2><table><tr><th>Regra</th><th>Janelas</th><th>n</th><th>Acerto</th><th>IC95%</th></tr>
+<tr><td>hora {&quot;hora&quot;: 14} exp=1 TODOS</td><td>4</td><td>56635</td><td>54.8%</td><td>[54.4%, 55.2%]</td></tr>
+<tr><td>hora {&quot;hora&quot;: 14} exp=5 EURUSD</td><td>4</td><td>2845</td><td>60.6%</td><td>[58.8%, 62.3%]</td></tr>
+<tr><td>hora {&quot;hora&quot;: 14} exp=5 TODOS</td><td>4</td><td>11401</td><td>60.7%</td><td>[59.8%, 61.6%]</td></tr>
+<tr><td>hora {&quot;hora&quot;: 14} exp=15 EURUSD</td><td>4</td><td>951</td><td>68.1%</td><td>[65.1%, 71.0%]</td></tr>
+<tr><td>hora {&quot;hora&quot;: 14} exp=15 TODOS</td><td>4</td><td>3807</td><td>68.8%</td><td>[67.3%, 70.2%]</td></tr>
+</table>
+<h2>Como ler</h2><ul><li><b>Passou no treino</b> não significa nada sozinho: com centenas de testes, dezenas passam por sorte (compare '≠50% no treino' com '…esperado só por sorte').</li><li><b>Teste</b>: regra congelada, dados que ela nunca viu; exige IC95% inferior acima do breakeven, Benjamini-Hochberg, bootstrap por dia, sem depender de poucos dias, estável em blocos e ativos.</li><li><b>Período novo</b>: confirmação final em meses recentes, intocados.</li><li>Dados Dukascopy (BID). A IQ liquida pelo PRÓPRIO preço: confira com <code>python alinhamento.py</code>.</li></ul>
+<p style='color:#777'>Duração: 64 s</p></body></html>

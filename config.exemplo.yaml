@@ -1,0 +1,164 @@
+# =====================================================================
+#  CONFIGURAÇÃO DO BOT  (copie este arquivo para config.yaml e edite)
+#  Linhas que começam com # são comentários.
+# =====================================================================
+
+conta:
+  # PRACTICE = demo (dinheiro virtual)  |  REAL = dinheiro de verdade
+  tipo: PRACTICE
+  # Para usar REAL você terá que DIGITAR esta palavra ao iniciar o bot:
+  frase_confirmacao_real: "CONFIRMO"
+
+ativos:
+  # Pares normais (preço de mercado) têm sufixo -op. OTC tem -OTC.
+  # Simulação de 1 mês (31/08–07/10/2026), reversão z=1,0 exp 5, só 9h–18h, 21 pares -op testados.
+  # Regra para entrar: acerto >= 52,5%, significativo após correção (BH) e >= 51,5% nas duas metades.
+  #   EURGBP 54,6% | GBPUSD 53,8% | EURTHB 53,2% | AUDUSD 52,6% | GBPAUD 52,5% | GBPJPY 52,5%
+  #   fora: AUDCAD 52,3% | AUDJPY 52,3% | EURUSD 51,6% (saiu: não passou) | GBPNZD 51,4% | GBPCAD 51,3%
+  #         NZDCAD 51,1% | USDTHB 51,0% | NZDUSD 50,9% | USDJPY 50,7% | EURCHF 50,6% | GBPCHF 50,5%
+  #         AUDCHF 50,4% | AUDNZD 50,1% | EURJPY 50,1% | EURNZD 49,7%
+  # Lista anterior: [EURUSD-op, GBPUSD-op, AUDUSD-op, GBPJPY-op]
+  # Nem todo par fica aberto o dia todo na IQ (a IQ às vezes suspende as binárias dos pares -op).
+  lista: [EURGBP-op, GBPUSD-op, EURTHB-op, AUDUSD-op, GBPAUD-op, GBPJPY-op]
+  incluir_otc: true           # inclui pares de MOEDAS -OTC abertos (sem cripto/índices). OTC = preço da própria
+                              # corretora; a estratégia NÃO foi testada em OTC (teste antigo: ~50%).
+  max_ativos_simultaneos: 3   # quantos ativos o bot acompanha ao mesmo tempo
+  payout_minimo: 0.75         # ignora ativos com payout abaixo de 75%
+  # Com acerto ~52,4%: payout 87% -> ~-2% por entrada | 80% -> ~-6% | 75% -> ~-8%
+  nota_minima: 0              # 0 = não filtra por nota (o filtro é o payout_minimo); só ordena os melhores
+  atualizar_lista_min: 15     # reavalia os ativos a cada 15 minutos
+
+estrategia:
+  # auto     = usa data/estrategia_congelada.json SE a pesquisa aprovou algo;
+  #            senão usa a estratégia "manual" abaixo (NÃO VALIDADA)
+  # congelada = só opera com regra aprovada (se não houver, não opera)
+  # manual   = sempre usa a de baixo
+  fonte: auto
+  arquivo_congelada: data/estrategia_congelada.json
+  manual:
+    # ---------------------------------------------------------------------------------
+    # TESTE DE TÁTICAS: troque só o valor de "tatica" (e reinicie o bot). Opções (exp 1 min):
+    #   mhi1_minoria  mhi1_maioria  mhi2_minoria  mhi3_minoria
+    #   milhao_maioria  milhao_minoria  padrao23  tres_mosqueteiros  torres_gemeas
+    # Para comparar as táticas já usadas:  python scripts\comparar_taticas.py
+    # Simulação em 34 pares OTC (1 mês, ~265 mil operações cada): todas entre 49,9% e 50,1%.
+    # >>> TÁTICA ATUAL: "contra a multidão" (humor dos traders da IQ). Só ao vivo.
+    #     limite 0.70 = entra PUT quando >=70% estão em CALL (e CALL quando >=70% estão em PUT).
+    #     O bot GRAVA o humor de todos os pares abertos em data/humor/ para validar depois:
+    #     python scripts\analisar_humor.py
+    familia: humor
+    params: {limite: 0.70, exp: 1}
+    # Táticas de quadrante: troque as 2 linhas acima por  familia: quadrante  e
+    #   params: {tatica: mhi1_minoria, exp: 1}   (ou outro nome da lista acima)
+    # Estratégia anterior (reversão de 5 min) — para voltar, troque as 2 linhas acima por:
+    #   familia: regime
+    #   params: {k: 5, z: 1.0, regime: todas, lado: -1, exp: 5}
+  # MODO MISTO (só vale com familia: humor): das 9h às 18h (Brasília) os pares -op do mercado
+  # operam a REVERSÃO de 5 min (único efeito medido nos dados: ~52,9% nesse horário; ao vivo
+  # 70% em 20 operações). Fora desse horário, humor no OTC. O humor é GRAVADO o tempo todo.
+  # humor_junto: false = no horário da reversão o humor NÃO opera (só grava). Motivo: o stop de
+  #   2 perdas é um só; as entradas de 1 min do humor disparavam o stop e paravam a reversão.
+  #   true = opera os dois juntos (humor no OTC + reversão nos -op).
+  # Para desligar o modo misto (só humor o dia todo): ativo: false
+  reversao_op:
+    ativo: true
+    horas_brt: [9, 18]
+    humor_junto: false
+    params: {k: 5, z: 1.0, regime: todas, lado: -1, exp: 5}
+  candles_historico: 1500     # velas de 1 min carregadas no início (aquecimento dos indicadores)
+  atraso_entrada_s: 1.5       # segundos após a abertura da vela para decidir/entrar
+
+risco:
+  entrada: 3.00               # valor por operação NA MOEDA DA CONTA (confira o mínimo no app!)
+  max_entrada: 3.00           # TRAVA: nenhuma entrada passa disso, nunca
+  stop_diario_pct: 5          # para no dia se perder 5% do saldo do início do dia (vale mesmo reiniciando)
+  stop_diario_valor: 0         # perda máxima do dia em dinheiro (0 = desligado); vale junto com o %
+  meta_diaria_pct: 0          # 0 = SEM meta (opera o dia todo). Ex.: 5 = para no dia se ganhar 5%
+  max_operacoes_hora: 12
+  max_operacoes_dia: 40
+  max_perdas_seguidas: 2      # STOP LOSS: 2 perdas seguidas
+  perda_max_sessao: 0         # PARA o bot se perder este valor desde que foi iniciado (0 = desligado)
+  parar_apos_perdas_seguidas: true   # true = PARA o bot; false = só pausa pelo tempo abaixo
+  esperar_resultado_antes_do_stop: true   # true = com 1 perda e uma operação aberta, espera o resultado antes de abrir outra
+  pausa_apos_perdas_min: 30
+  # Não abre duas operações ao mesmo tempo com a mesma moeda (ex.: USDBRL + USDTRY = 2x "dólar").
+  #   humor = só no humor (padrão; nos dados, as entradas cortadas no humor acertaram 42,9%)
+  #   todas = também na reversão (nos dados de 07/10 isso cortaria entradas que acertaram 72,7%)
+  #   nao   = desligado
+  uma_por_moeda: humor
+  orcamento_teste: 20.00      # TETO DE PERDA TOTAL (desde o início). Atingiu -> bot para de vez.
+  martingale:
+    ativo: false              # DESLIGADO por padrão. Não cria vantagem (veja o README).
+    max_gales: 2
+    fator: 2.2
+
+automacao:
+  # =================================================================================
+  # AUTOMAÇÃO DE PARES E ESTRATÉGIAS (leia LEIA_PRIMEIRO_AUTOMACAO.md)
+  # O bot vê sozinho o que a IQ tem aberto (pares de mercado e/ou OTC) e roda o plano certo.
+  #   ativo: false  -> volta ao funcionamento antigo (seção estrategia acima)
+  # =================================================================================
+  ativo: true
+  # manual = nada muda sozinho (só recomenda) | semi = pares de estratégia aprovada seguem a
+  # avaliação; trocar de estratégia só com "Aplicar" no app | auto = troca sozinho p/ a melhor aprovada
+  modo: semi
+  checar_fase_min: 3            # a cada quantos minutos pergunta à IQ o que está aberto
+  leituras_para_trocar: 2       # leituras seguidas iguais para mudar de fase (evita pular à toa)
+  misto_usa_otc: false          # com pares de mercado E OTC abertos, roda também o plano do OTC?
+  plano_inicial:                # estratégia de cada mercado (chaves do catalogo.py)
+    op: confluencia_5_m5        # pares de mercado
+    otc: reabertura_otc         # OTC (só a reabertura diária nas janelas)
+  permitir_em_teste: true       # pode operar estratégia ainda NÃO aprovada (aparece "EM TESTE")
+  em_teste_otc_horario_comercial: false   # OTC não aprovado opera em dia útil 9h-18h? (false = só grava)
+  pares_op: []                  # vazio = usa ativos.lista (quando a estratégia não está aprovada)
+  pares_otc: []                 # vazio = todos os pares de moedas OTC abertos
+  payout_minimo_otc: 0         # 0 = sem filtro. Ex.: 0.85 = só pares OTC com payout de 85% ou mais (a reabertura não usa)
+  reavaliar_horas: 24           # reavalia as estratégias sozinho a cada 24 h (0 = só pelo botão)
+  ignorar_horas: 24             # "Ignorar" esconde a recomendação por 24 h
+  gravar_humor: true            # grava o humor de todos os pares (para validar o humor depois)
+  aprovacao:                    # REGRAS FIXAS para aprovar par x estratégia (não mude para "caber")
+    janela_dias: 30             # testa nos últimos 30 dias de velas
+    n_min: 300                  # mínimo de operações simuladas
+    bh_q: 0.05                  # correção para muitas combinações (Benjamini-Hochberg)
+    metade_min: 0.515           # acerto mínimo em CADA metade do período
+    ultimos7_min: 0.50          # últimos 7 dias não podem desabar abaixo disso
+    n7_min: 50
+    margem_breakeven: 0.02      # aceita até 2 pontos abaixo do empate (1/(1+payout))
+
+monitor:
+  # Para o bot se o IC95% do acerto ficar INTEIRO abaixo do breakeven
+  min_operacoes: 40
+  ativo: true
+
+noticias:
+  ativo: true
+  minutos_antes: 15
+  minutos_depois: 15
+  impactos: [High]            # High, Medium, Low
+  bloquear_se_falhar: false   # se o calendário não carregar, operar mesmo assim?
+
+telegram:
+  ativo: false                # token e chat_id ficam no .env (TELEGRAM_TOKEN, TELEGRAM_CHAT_ID)
+
+conexao:
+  timeout_s: 30
+  max_tentativas: 8
+
+painel:
+  ativo: true
+
+# Reabertura do OTC (catalogo: reabertura_otc). Todo dia o OTC pausa 5 min em horários fixos e, na
+# volta, o preço salta contra o caminho que andou desde a reabertura anterior. Só tem vantagem se a
+# compra sair no preço antigo, no primeiro instante. Usa o mesmo risco (stops, simultâneas, entrada).
+reabertura:
+  ativo: true                 # true = roda JUNTO com as estratégias normais (independe do plano OTC)
+  reserva_antes_s: 120        # 2 min antes da janela as outras estratégias param de entrar...
+  reserva_depois_s: 60        # ...até 1 min depois (deixa as vagas de simultâneas para a reabertura)
+  z_min: 10                   # só entra se o preço andou pelo menos 10 desvios desde a última reabertura
+  max_entradas_janela: 2      # no máximo 2 pares por janela (e nunca passa das simultâneas)
+  tentar_de_s: -5             # começa a tentar comprar 5 s antes da reabertura...
+  tentar_ate_s: 20            # ...e desiste 20 s depois dela
+  intervalo_s: 0.25           # intervalo entre as tentativas
+  preparar_s: 420             # baixa as velas ~7 min antes (antes da pausa, com os pares abertos)
+  confirmar_s: 90             # 1,5 min antes confirma a pausa pela lista de pares abertos
+  velas: 1600                 # velas de 1 min para achar a reabertura anterior (~26 h)

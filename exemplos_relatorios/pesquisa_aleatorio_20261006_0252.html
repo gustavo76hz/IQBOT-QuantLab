@@ -1,0 +1,26 @@
+<html><head><meta charset='utf-8'><title>Pesquisa de hipóteses</title><style>body{font-family:Segoe UI,Arial,sans-serif;margin:24px;color:#222;background:#fafafa}
+table{border-collapse:collapse;margin:12px 0;font-size:13px}td,th{border:1px solid #ccc;padding:4px 8px}
+th{background:#eee}.ok{color:#0a7a2f;font-weight:bold}.ruim{color:#b00020}.box{background:#fff;border:1px solid #ddd;
+padding:12px 16px;border-radius:6px;margin:12px 0}h1{font-size:22px}h2{font-size:18px;margin-top:28px}</style></head><body>
+<h1>Pesquisa de hipóteses — pipeline de validação</h1>
+<div class='box'><b>CONTROLE: dados aleatorio</b> (sintéticos). Esperado: NADA aprovado.</div>
+<div class='box'><b>Veredito:</b> <span class='ruim'>Nenhuma hipótese passou em todas as etapas.</span> Não há evidência de vantagem: a expectativa de operar é negativa.</div>
+<p>Treino: 2021-01-04 → 2022-03-10 | Teste: → 2022-12-22 | Período novo (intocado): → 2023-06-22</p>
+<p>Breakeven: exp 1 min = 54.1% (payout 85%), exp 5 min = 54.1% (payout 85%), exp 15 min = 55.6% (payout 80%)</p>
+<h2>Ativos</h2><table><tr><th>Ativo</th><th>De</th><th>Até</th><th>Candles</th></tr>
+<tr><td>EURUSD</td><td>2021-01-04</td><td>2023-06-22</td><td>927,360</td></tr>
+<tr><td>GBPUSD</td><td>2021-01-04</td><td>2023-06-22</td><td>927,360</td></tr>
+<tr><td>USDJPY</td><td>2021-01-04</td><td>2023-06-22</td><td>927,360</td></tr>
+<tr><td>AUDUSD</td><td>2021-01-04</td><td>2023-06-22</td><td>927,360</td></tr>
+</table><h2>Resumo por família</h2><table><tr><th>Família</th><th>Testes (treino)</th><th>≠50% no treino (p&lt;5%)</th><th>…esperado só por sorte</th><th>Passaram treino (IC&gt;breakeven)</th><th>Passaram teste</th><th>Aprovadas</th></tr>
+<tr><td>hora</td><td>720</td><td>16</td><td>18</td><td>0</td><td>0</td><td class=''>0</td></tr>
+<tr><td>regime</td><td>956</td><td>8</td><td>24</td><td>0</td><td>0</td><td class=''>0</td></tr>
+<tr><td>choque</td><td>100</td><td>1</td><td>2</td><td>0</td><td>0</td><td class=''>0</td></tr>
+<tr><td>dxy</td><td>180</td><td>3</td><td>4</td><td>0</td><td>0</td><td class=''>0</td></tr>
+<tr><td>bollinger</td><td>90</td><td>1</td><td>2</td><td>0</td><td>0</td><td class=''>0</td></tr>
+<tr><td>sequencia</td><td>120</td><td>1</td><td>3</td><td>0</td><td>0</td><td class=''>0</td></tr>
+</table>
+<h2>Hipóteses que passaram no treino (e o que aconteceu depois)</h2><table><tr><th>Família</th><th>Parâmetros</th><th>Exp</th><th>Ativo</th><th>Lado</th><th>Treino n / acerto</th><th>Teste n / acerto [IC95%]</th><th>Novo n / acerto [IC95%]</th><th>Status</th></tr>
+</table>
+<h2>Como ler</h2><ul><li><b>Passou no treino</b> não significa nada sozinho: com centenas de testes, dezenas passam por sorte (compare '≠50% no treino' com '…esperado só por sorte').</li><li><b>Teste</b>: regra congelada, dados que ela nunca viu; exige IC95% inferior acima do breakeven, Benjamini-Hochberg, bootstrap por dia, sem depender de poucos dias, estável em blocos e ativos.</li><li><b>Período novo</b>: confirmação final em meses recentes, intocados.</li><li>Dados Dukascopy (BID). A IQ liquida pelo PRÓPRIO preço: confira com <code>python alinhamento.py</code>.</li></ul>
+<p style='color:#777'>Duração: 81 s</p></body></html>

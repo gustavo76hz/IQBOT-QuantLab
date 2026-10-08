@@ -1,0 +1,15 @@
+.env
+config.yaml
+venv/
+data/
+logs/
+reports/
+__pycache__/
+*.pyc
+.pytest_cache/
+STOP
+*.db
+*.lock
+backup*/
+lixos/
+interface_antiga_backup/
